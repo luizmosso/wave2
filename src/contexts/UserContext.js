@@ -25,7 +25,10 @@ export const UserProvider = ({ children }) => {
       const usuario = await response.json();
       if (usuario.error) throw Error(usuario.error);
       setUser(usuario);
-      localStorage.setItem('userData', JSON.stringify(usuario));
+      localStorage.setItem(
+        process.env.REACT_APP_LOCALSTORAGE,
+        JSON.stringify(usuario)
+      );
       return usuario;
     } catch (error) {
       return { error: true, message: error.message };
@@ -33,13 +36,13 @@ export const UserProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('userData');
+    const storedUser = localStorage.getItem(process.env.REACT_APP_LOCALSTORAGE);
     if (storedUser) setUser(JSON.parse(storedUser));
   }, []);
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('userData');
+    localStorage.removeItem(process.env.REACT_APP_LOCALSTORAGE);
   };
 
   return (

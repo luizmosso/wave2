@@ -26,7 +26,7 @@ function App() {
 
 function Routes() {
   const AuthenticatedRoute = ({ component: Component, ...rest }) => {
-    const storedUser = localStorage.getItem('userData');
+    const storedUser = localStorage.getItem(process.env.REACT_APP_LOCALSTORAGE);
     const user = storedUser ? JSON.parse(storedUser) : null;
     return (
       <Route
