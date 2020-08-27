@@ -50,7 +50,7 @@ function Attendance(props) {
       const month = {
         number,
         year,
-        label: constants.months[number].name,
+        label: `${constants.months[number].name} ${year}`,
         status: 'unset',
         disabled,
       };
@@ -120,7 +120,6 @@ function Attendance(props) {
       }
 
       if (family.ativo === undefined) family.ativo = true;
-      console.log(family.itensDoados);
       if (!family.itensDoados || isNaN(family.itensDoados))
         family.itensDoados = Math.ceil(family.membros.length / 4);
 

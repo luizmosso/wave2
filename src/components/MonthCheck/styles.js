@@ -20,7 +20,7 @@ export const Month = styled.div`
 `;
 export const Label = styled.p`
   margin-bottom: 2px;
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   color: ${colors.light};
 `;
 export const Check = styled.button`
