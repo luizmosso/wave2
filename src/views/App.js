@@ -44,8 +44,8 @@ function Routes() {
       <Switch>
         <AuthenticatedRoute exact path="/" component={Main} />
         <Route path="/login" component={Login} />
-        <AuthenticatedRoute exact path="/familias" component={Familias} />
-        <AuthenticatedRoute exact path="/familias/:id" component={Familias} />
+        <AuthenticatedRoute path="/familias/:id" component={Familias} />
+        <AuthenticatedRoute path="/familias" component={Familias} />
         <AuthenticatedRoute path="/doacoes" component={Main} />
         <AuthenticatedRoute path="/financeiro" component={Main} />
         <AuthenticatedRoute path="/eventos" component={Main} />
