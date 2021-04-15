@@ -1,20 +1,14 @@
-import React, { useEffect, useContext, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useToasts } from 'react-toast-notifications';
 import moment from 'moment';
 import Switch from 'rc-switch';
-import {
-  Container,
-  Row,
-  SubTitle,
-  SwitchStyle,
-  Label,
-  Wrapper,
-  Text,
-} from './styles';
+import { SwitchStyle } from '../../styles';
+import { Container, Row, SubTitle, Label, Wrapper, Text } from './styles';
 import { Input, TextArea, MonthCheck, Button } from '../../../../components';
 import { constants } from '../../../../shared';
-import { UserContext } from '../../../../contexts';
+import { useUser, useInstitution } from '../../../../contexts';
 
 function Attendance(props) {
   const { isMobile, family, setFamily, insertFamily, updateFamily } = props;
@@ -29,8 +23,8 @@ function Attendance(props) {
   } = family || {};
   const [statusAtual, setStatusAtual] = useState(null);
 
-  const { user } = useContext(UserContext);
-
+  const { user } = useUser();
+  const { institution } = useInstitution();
   const { addToast } = useToasts();
 
   const history = useHistory();
@@ -136,7 +130,10 @@ function Attendance(props) {
       if (family._id) {
         response = await updateFamily(family);
       } else {
-        response = await insertFamily(family);
+        response = await insertFamily({
+          ...family,
+          instituicao: institution._id,
+        });
       }
 
       if (response && response.error) {
@@ -237,15 +234,16 @@ function Attendance(props) {
           onChange={(cronograma) => setFamily({ ...family, cronograma })}
         />
       </Wrapper>
-      <SwitchStyle />
       <Row>
         <Label>Situação</Label>
-        <Switch
-          checked={ativo === undefined ? true : ativo}
-          onChange={() => setFamily({ ...family, ativo: !ativo })}
-          checkedChildren={'ativa'}
-          unCheckedChildren={'inativa'}
-        />
+        <SwitchStyle>
+          <Switch
+            checked={ativo === undefined ? true : ativo}
+            onChange={() => setFamily({ ...family, ativo: !ativo })}
+            checkedChildren={'ativa'}
+            unCheckedChildren={'inativa'}
+          />
+        </SwitchStyle>
       </Row>
       <Button onClick={saveFamily}>Salvar</Button>
     </Container>

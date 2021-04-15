@@ -1,7 +1,8 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import SwiperCore, { Navigation } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { useInstitution } from '../../../contexts';
 import {
   Container,
   Row,
@@ -13,7 +14,11 @@ import {
 } from './styles';
 import { Step } from '../../../components';
 import { BasicInfo, Rent, Members, Attendance } from './Steps';
-import { FamilyContext } from '../../../contexts';
+import {
+  getFamily,
+  insertFamily,
+  updateFamily,
+} from '../../../services/family';
 import 'swiper/swiper.scss';
 import 'swiper/components/navigation/navigation.scss';
 
@@ -24,7 +29,7 @@ function Details(props) {
   const isMobile = useMediaQuery({ query: '(max-width: 1224px)' });
   const [slideIndex, setSlideIndex] = useState(0);
   const [family, setFamily] = useState(null);
-  const { getFamily, insertFamily, updateFamily } = useContext(FamilyContext);
+  const { institution } = useInstitution();
 
   const slideProps = {
     family,
@@ -53,14 +58,14 @@ function Details(props) {
   ];
 
   useEffect(() => {
-    if (familyId) {
+    if (familyId && institution) {
       const setUpFamily = async (id) => {
-        const searchedFamily = await getFamily(id);
-        setFamily(searchedFamily[0]);
+        const searchedFamily = await getFamily(id, institution._id);
+        setFamily(searchedFamily);
       };
       setUpFamily(familyId);
     }
-  }, [familyId]);
+  }, [familyId, institution]);
 
   return (
     <Container>

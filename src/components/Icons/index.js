@@ -6,3 +6,4 @@ export { default as FoodIcon } from './FoodIcon';
 export { default as PlusIcon } from './PlusIcon';
 export { default as CircleIcon } from './CircleIcon';
 export { default as SearchIcon } from './SearchIcon';
+export { default as ChevronLeftIcon } from './ChevronLeftIcon';

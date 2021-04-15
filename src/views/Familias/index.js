@@ -1,13 +1,14 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { Container, Header, Content } from './styles';
-import { FamilyProvider } from '../../contexts';
+import { Container, Header, Content, BackLink, ChevronLabel } from './styles';
+import { colors } from '../../shared';
 import {
   DashboardIcon,
   FamilyIcon,
   GroupAddIcon,
   Tabs,
   Tab,
+  ChevronLeftIcon,
 } from '../../components';
 import General from './General';
 import List from './List';
@@ -39,23 +40,31 @@ function Familias() {
     DETAILS: <Details familyId={familyId} />,
   };
   return (
-    <FamilyProvider>
-      <Container>
-        <Header>
-          <Tabs>
-            {tabs.map(({ name, icon }) => (
-              <Tab
-                key={name}
-                selected={selectedTab === name}
-                icon={icon}
-                onClick={() => setSelectedTab(name)}
-              />
-            ))}
-          </Tabs>
-        </Header>
-        <Content>{content[selectedTab]}</Content>
-      </Container>
-    </FamilyProvider>
+    <Container>
+      <Header>
+        <Tabs>
+          {tabs.map(({ name, icon }) => (
+            <Tab
+              key={name}
+              selected={selectedTab === name}
+              icon={icon}
+              onClick={() => setSelectedTab(name)}
+            />
+          ))}
+        </Tabs>
+      </Header>
+      <Content>
+        <BackLink to="/">
+          <ChevronLeftIcon
+            width="20vw"
+            maxWidth={32}
+            color={colors.lightBlue}
+          />
+          <ChevronLabel>Principal</ChevronLabel>
+        </BackLink>
+        {content[selectedTab]}
+      </Content>
+    </Container>
   );
 }
 

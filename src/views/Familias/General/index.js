@@ -1,6 +1,8 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import { useHistory } from 'react-router-dom';
+import { useToasts } from 'react-toast-notifications';
+import { useInstitution } from '../../../contexts/Institution';
 import { colors } from '../../../shared';
 import {
   Container,
@@ -14,15 +16,17 @@ import {
   Col,
 } from './styles';
 import { FamilyIcon, FoodIcon } from '../../../components';
-import { FamilyContext } from '../../../contexts';
+import { getFamilies } from '../../../services/family';
 
 function General() {
   const [data, setData] = useState(null);
-  const { getFamilies } = useContext(FamilyContext);
   const history = useHistory();
+  const { addToast } = useToasts();
+  const { institution } = useInstitution();
 
   useEffect(() => {
     history.push('/familias');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fixItensDoados = (family) => {
@@ -59,13 +63,19 @@ function General() {
     return 0;
   };
 
+  const calcCestasBasicas = (familiasAtivas) => {
+    if (familiasAtivas?.length === 0) return 0;
+    if (familiasAtivas?.length === 1) return fixItensDoados(familiasAtivas[0]);
+    return familiasAtivas.reduce(
+      (prev, next) => fixItensDoados(prev) + fixItensDoados(next)
+    );
+  };
+
   const setUpDashboardData = (families) => {
     const familiasAtivas = families.filter(({ ativo }) => ativo);
     const ativas = familiasAtivas.length;
     const inativas = families.filter(({ ativo }) => !ativo).length;
-    const cestas = familiasAtivas.reduce(
-      (prev, next) => fixItensDoados(prev) + fixItensDoados(next)
-    );
+    const cestas = calcCestasBasicas(familiasAtivas);
     const recolhidasMesPassado = getRecolhidasMesPassado(families);
     const newData = {
       ATIVAS: {
@@ -106,11 +116,19 @@ function General() {
 
   useEffect(() => {
     const setUpData = async () => {
-      const fams = await getFamilies();
-      setUpDashboardData(fams);
+      const fams = await getFamilies(institution._id);
+      if (fams.error) {
+        addToast(`Erro: ${fams.error}`, {
+          appearance: 'error',
+          autoDismiss: true,
+        });
+        return;
+      }
+      setUpDashboardData(fams || []);
     };
-    setUpData();
-  }, [getFamilies]);
+    if (getFamilies && institution) setUpData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [institution]);
 
   const Item = ({ color, title, value, height, icon }) => (
     <Box color={color} height={height}>

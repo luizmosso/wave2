@@ -12,7 +12,7 @@ export const Container = styled.div`
 `;
 
 export const Header = styled.div`
-  height: 20vh;
+  height: 15vh;
   width: 100%;
 `;
 
@@ -59,4 +59,10 @@ export const BoxTitle = styled.p`
   margin: 0;
   margin-top: 3px;
   color: ${colors.white};
+`;
+
+export const SelectContainer = styled.div`
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 5vh;
 `;

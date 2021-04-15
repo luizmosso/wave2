@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
 import { useToasts } from 'react-toast-notifications';
@@ -15,11 +15,12 @@ import {
   InfoDescription,
 } from './styles';
 import { Logo, Input, Button } from '../../components';
-import { UserContext } from '../../contexts';
+import { useUser, useInstitution } from '../../contexts';
 
 function Login() {
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' });
-  const { login, logout } = useContext(UserContext);
+  const { authenticate, logout } = useUser();
+  const { setCurrentInstitution } = useInstitution();
   const history = useHistory();
   const [email, setEmail] = useState('');
   const [pwd, setPwd] = useState('');
@@ -28,16 +29,20 @@ function Login() {
 
   useEffect(() => {
     logout();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const doLogin = async () => {
-    const response = await login(email, pwd);
-    if (response.error) {
-      addToast(response.message, {
+  const login = async () => {
+    const user = await authenticate(email, pwd);
+    if (user.error) {
+      addToast(user.message, {
         appearance: 'error',
         autoDismiss: true,
       });
-    } else history.push('/');
+    } else {
+      setCurrentInstitution(user.instituicoes[0]._id, user);
+      history.push('/');
+    }
   };
 
   return (
@@ -61,7 +66,7 @@ function Login() {
               value={pwd}
               onChange={setPwd}
             />
-            <Button mt={4} onClick={doLogin}>
+            <Button mt={4} onClick={login}>
               Entrar
             </Button>
           </Fields>

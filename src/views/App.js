@@ -1,56 +1,24 @@
 import React from 'react';
 import { ToastProvider } from 'react-toast-notifications';
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  Redirect,
-} from 'react-router-dom';
-import { AppContainer, GlobalStyle } from './styles';
-import { UserProvider } from '../contexts';
-import Login from '../views/Login';
-import Main from '../views/Main';
-import Familias from '../views/Familias';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { AppContainer, GlobalStyle } from '../shared/GlobalStyle';
+import { UserProvider, InstitutionProvider } from '../contexts';
+import Routes from '../routes';
 
 function App() {
   return (
     <Router>
       <ToastProvider autoDismiss autoDismissTimeout={3000} placement="top-left">
         <UserProvider>
-          <Routes />
+          <InstitutionProvider>
+            <AppContainer>
+              <GlobalStyle />
+              <Routes />
+            </AppContainer>
+          </InstitutionProvider>
         </UserProvider>
       </ToastProvider>
     </Router>
-  );
-}
-
-function Routes() {
-  const AuthenticatedRoute = ({ component: Component, ...rest }) => {
-    const storedUser = localStorage.getItem(process.env.REACT_APP_LOCALSTORAGE);
-    const user = storedUser ? JSON.parse(storedUser) : null;
-    return (
-      <Route
-        {...rest}
-        render={(props) =>
-          user ? <Component {...props} /> : <Redirect to="/login" />
-        }
-      />
-    );
-  };
-
-  return (
-    <AppContainer>
-      <GlobalStyle />
-      <Switch>
-        <AuthenticatedRoute exact path="/" component={Main} />
-        <Route path="/login" component={Login} />
-        <AuthenticatedRoute path="/familias/:id" component={Familias} />
-        <AuthenticatedRoute path="/familias" component={Familias} />
-        <AuthenticatedRoute path="/doacoes" component={Main} />
-        <AuthenticatedRoute path="/financeiro" component={Main} />
-        <AuthenticatedRoute path="/eventos" component={Main} />
-      </Switch>
-    </AppContainer>
   );
 }
 
