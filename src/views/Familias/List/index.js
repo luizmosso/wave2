@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Switch from 'rc-switch';
+import { useToasts } from 'react-toast-notifications';
 import { useInstitution } from '../../../contexts';
 import { getFamilies } from '../../../services/family';
 import {
@@ -25,14 +26,22 @@ function List() {
   const [filteredFamilias, setFilteredFamilias] = useState([]);
   const [onlyActives, setOnlyActives] = useState(true);
 
+  const { addToast } = useToasts();
   const history = useHistory();
   const { institution } = useInstitution();
 
   useEffect(() => {
     const setUpFamily = async () => {
       const fams = await getFamilies(institution._id);
-      setFamilias(fams);
-      setSearchedFamilias(fams);
+      if (fams?.error) {
+        addToast(`Erro: ${fams.error}`, {
+          appearance: 'error',
+          autoDismiss: true,
+        });
+        return;
+      }
+      setFamilias(fams || []);
+      setSearchedFamilias(fams || []);
     };
     if (institution) setUpFamily();
   }, [institution]);
