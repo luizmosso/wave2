@@ -41,12 +41,13 @@ export const Code = styled.p`
   height: 40px;
   border-radius: 100px;
   color: ${colors.white};
-  font-size: 0.8rem;
+  font-size: 70%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0;
   margin-right: 8px;
+  white-space: nowrap;
 `;
 export const Name = styled.p`
   font-size: 1rem;
