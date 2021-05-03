@@ -58,7 +58,8 @@ function General() {
     });
     if (familiesPickedUp && familiesPickedUp.length > 0)
       return familiesPickedUp.reduce(
-        (prev, next) => fixItensDoados(prev) + fixItensDoados(next)
+        (prev, next) => fixItensDoados(prev) + fixItensDoados(next),
+        0
       );
     return 0;
   };
@@ -74,6 +75,7 @@ function General() {
   const setUpDashboardData = (families) => {
     const familiasAtivas = families.filter(({ ativo }) => ativo);
     const ativas = familiasAtivas.length;
+
     const inativas = families.filter(({ ativo }) => !ativo).length;
     const cestas = calcCestasBasicas(familiasAtivas);
     const recolhidasMesPassado = getRecolhidasMesPassado(families);
